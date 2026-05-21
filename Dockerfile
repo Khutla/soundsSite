@@ -1,19 +1,19 @@
-FROM node:20
+FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies first
+# Copy dependency files first
 COPY package*.json ./
 
 RUN npm install
 
-# Copy prisma FIRST (important fix)
+# Copy prisma BEFORE generate
 COPY prisma ./prisma
 
-# Copy rest of project
+# Copy everything else
 COPY . .
 
-# Generate Prisma client AFTER schema exists
+# NOW generate prisma manually (safe point)
 RUN npx prisma generate
 
 # Build Next.js
