@@ -1,23 +1,24 @@
-# Base image
-FROM node:18-alpine
+FROM node:20
 
-# Set working directory
 WORKDIR /app
 
-# Copy package files
+# Install dependencies first
 COPY package*.json ./
 
-# Install dependencies
 RUN npm install
 
-# Copy all project files
+# Copy prisma FIRST (important fix)
+COPY prisma ./prisma
+
+# Copy rest of project
 COPY . .
 
-# Build Next.js app
+# Generate Prisma client AFTER schema exists
+RUN npx prisma generate
+
+# Build Next.js
 RUN npm run build
 
-# Expose port
 EXPOSE 3000
 
-# Start app
 CMD ["npm", "run", "start"]
