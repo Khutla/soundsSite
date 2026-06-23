@@ -3,12 +3,13 @@ FROM node:20-alpine AS base
 
 # 2. Install dependencies only when needed
 FROM base AS deps
-RUN apk add --no-cache libc6-compat openssl
+# Add required libraries for general systems and explicit openssl engines
+RUN apk add --no-cache libc6-compat openssl libcrypto3
+
 WORKDIR /app
 
 # Copy package management files
 COPY package.json package-lock.json* ./
-# Copy your prisma schema so it's available during dependency install
 COPY prisma ./prisma/
 
 # Install dependencies and explicitly generate Prisma Client
@@ -21,10 +22,9 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Next.js collects completely anonymous telemetry data about general usage.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-# ADD THESE TWO LINES HERE
+# Pass dummy database credentials for the build phase
 ARG DATABASE_URL="postgresql://mockuser:mockpassword@localhost:5432/mockdb?schema=public"
 ENV DATABASE_URL=$DATABASE_URL
 
@@ -37,6 +37,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# Install OpenSSL inside the final runner container stage so it is available at runtime
+RUN apk add --no-cache openssl libcrypto3 libc6-compat
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
