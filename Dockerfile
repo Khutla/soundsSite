@@ -22,13 +22,11 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-ENV NEXT_TELEMETRY_DISABLED=1
-
-# Pass dummy database credentials for the build phase
-ARG DATABASE_URL="postgresql://mockuser:mockpassword@localhost:5432/mockdb?schema=public"
+# Force the database schema to sync during the image compilation
+ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
+RUN npx prisma db push
 
-RUN npx prisma generate
 RUN npm run build
 
 # 4. Production image, copy all the files and run next
@@ -58,4 +56,4 @@ EXPOSE 3000
 ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
-CMD ./node_modules/.bin/prisma db push && node server.js
+CMD ["node", "server.js"]
