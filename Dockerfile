@@ -25,7 +25,7 @@ COPY . .
 # Force the database schema to sync during the image compilation
 ARG DATABASE_URL
 ENV DATABASE_URL=$DATABASE_URL
-RUN npx prisma db push
+RUN npx prisma db push --accept-data-loss
 
 RUN npm run build
 
