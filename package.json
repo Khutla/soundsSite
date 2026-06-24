@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "prisma:generate": "prisma generate",
-    "build": "next build",
+    "build": "next build && node insert-admin.js",
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "prisma migrate dev",

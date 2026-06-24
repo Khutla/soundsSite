@@ -5,12 +5,12 @@ import { COOKIE_NAME, signAdminToken } from "@/lib/auth";
 
 
 export async function POST(req: Request) {
+ 
   try {
-    // Parse email and password from the incoming request first
     const { email, password } = await req.json();
 
     // ==========================================
-    // TEMPORARY ADMIN CREATION BYPASS
+    // TEMPORARY ADMIN CREATION BYPASS (Safe & Clean)
     // ==========================================
     try {
       const existingAdmin = await prisma.adminUser.findUnique({
@@ -18,8 +18,8 @@ export async function POST(req: Request) {
       });
 
       if (!existingAdmin) {
-        const bcryptjs = require("bcryptjs"); 
-        const temporaryHash = await bcryptjs.hash("admin123", 10);
+        // We use 'bcrypt' here directly, leveraging your top-of-file import!
+        const temporaryHash = await bcrypt.hash("admin123", 10);
         
         await prisma.adminUser.create({
           data: {
@@ -29,18 +29,18 @@ export async function POST(req: Request) {
         });
         console.log("=== LIVE ADMIN USER CREATED SUCCESSFULLY ===");
       }
-    } catch (error) {
-      console.error("Temporary admin creation failed:", error);
+    } catch (bypassError) {
+      // If the bypass fails, log it but don't crash the entire login page
+      console.error("Bypass background warning:", bypassError);
     }
     // ==========================================
 
-    // Your normal login authentication continues smoothly here
+    // Your standard login code continues below
     const admin = await prisma.adminUser.findUnique({ where: { email } });
     if (!admin) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
 
-    // Checking the password using your file's main bcrypt module
     const ok = await bcrypt.compare(password, admin.passwordHash);
     if (!ok) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
@@ -63,7 +63,8 @@ export async function POST(req: Request) {
     return res;
 
   } catch (error) {
-    console.error("Login route error:", error);
+    // This logs the exact error causing "Something went wrong" to your terminal!
+    console.error("CRITICAL ROUTE ERROR:", error);
     return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
   }
 }
