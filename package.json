@@ -5,14 +5,14 @@
   "scripts": {
     "dev": "next dev",
     "prisma:generate": "prisma generate",
-    "build": "next build && node insert-admin.js",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts"
+    "seed": "node insert-admin.js"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
