@@ -11,6 +11,10 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "tsx prisma/seed.ts"
   },
+
+  "prisma": {
+    "seed": "echo 'Skipping deployment seed: database already initialized.'"
+  },
   
   "dependencies": {
     "@prisma/client": "^5.22.0",
