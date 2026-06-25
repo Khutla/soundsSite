@@ -23,17 +23,20 @@ export function AdminNav({ email }: { email: string }) {
   }
 
   return (
-    <aside className="flex w-full shrink-0 flex-col border-b border-zinc-800 bg-zinc-950 lg:w-56 lg:border-b-0 lg:border-r lg:min-h-screen">
+    <aside className="flex w-full shrink-0 flex-col border-b border-zinc-800 bg-zinc-950 lg:w-56 lg:min-h-screen lg:border-b-0 lg:border-r">
       <div className="flex items-center gap-2 border-b border-zinc-800 px-5 py-4 lg:block">
-      <div className="relative h-30 w-30">
-      <Image
-    src="/MkH.png"
-    alt="MkhSounds Logo"
-    fill
-    className="object-contain drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]"
-    priority
-  />
-</div>
+        <Link href="/" className="block">
+          <div className="relative h-30 w-30">
+            <Image
+              src="/MkH.png"
+              alt="MkhSounds Logo"
+              fill
+              className="object-contain drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]"
+              priority
+              sizes="120px"
+            />
+          </div>
+        </Link>
         <div className="min-w-0 flex-1 lg:mt-3">
           <p className="truncate text-sm font-semibold text-white">MkhSounds</p>
           <p className="truncate text-xs text-zinc-500" title={email}>
@@ -41,7 +44,7 @@ export function AdminNav({ email }: { email: string }) {
           </p>
         </div>
       </div>
-      <nav className="flex flex-wrap gap-1 p-3 lg:flex-col">
+      <nav className="flex flex-1 flex-wrap gap-1 p-3 lg:flex-col">
         {items.map((i) => {
           const active =
             i.href === "/admin"
@@ -62,7 +65,7 @@ export function AdminNav({ email }: { email: string }) {
           );
         })}
       </nav>
-      <div className="mt-165 hidden p-3 lg:block">
+      <div className="mt-auto border-t border-zinc-800 p-3">
         <button
           type="button"
           onClick={() => logout()}
@@ -73,15 +76,6 @@ export function AdminNav({ email }: { email: string }) {
         <Link href="/" className="mt-2 block text-center text-xs text-zinc-600 hover:text-amber-400">
           View storefront
         </Link>
-      </div>
-      <div className="flex border-t border-zinc-800 p-3 lg:hidden">
-        <button
-          type="button"
-          onClick={() => logout()}
-          className="flex-1 rounded-lg border border-zinc-800 py-2 text-sm text-zinc-400"
-        >
-          Sign out
-        </button>
       </div>
     </aside>
   );
