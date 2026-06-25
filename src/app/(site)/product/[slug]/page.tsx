@@ -40,7 +40,13 @@ export default async function ProductPage({ params }: Props) {
       <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:gap-14">
         <div className="relative aspect-square overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/60">
           {product.imageUrl ? (
-            <Image src={product.image} alt={product.name} width={200} height={200} unoptimized />
+            <Image
+              src={product.imageUrl}
+              alt={product.name}
+              fill
+              className="object-cover"
+              unoptimized
+            />
           ) : (
             <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-800 to-black">
               <span className="text-8xl text-zinc-700">♪</span>

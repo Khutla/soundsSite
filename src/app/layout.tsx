@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   description:
     "MkhSounds — car audio, amplifiers, speakers, and accessories. Dark-room clarity for your drive.",
   metadataBase: new URL("https://mkhsounds.co.za"),
+  icons: {
+    icon: "/MkH.png",
+    apple: "/MkH.png",
+    shortcut: "/MkH.png",
+  },
 };
 
 export default function RootLayout({

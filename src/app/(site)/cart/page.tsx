@@ -34,7 +34,13 @@ export default function CartPage() {
               <li key={i.slug} className="flex flex-wrap items-center gap-4 p-4 sm:flex-nowrap">
                 <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-zinc-950">
                   {i.imageUrl ? (
-                    <Image src={product.image} alt={product.name} width={200} height={200} unoptimized />
+                    <Image
+                      src={i.imageUrl}
+                      alt={i.name}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-zinc-600">
                       ♪

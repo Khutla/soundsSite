@@ -3,6 +3,7 @@ import path from "path";
 import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { requireAdminApi } from "@/lib/admin-api";
+import { getUploadDir, uploadPublicUrl } from "@/lib/uploads";
 
 const MAX_BYTES = 5 * 1024 * 1024;
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
@@ -45,12 +46,12 @@ export async function POST(req: Request) {
             : "gif";
 
     const name = `${crypto.randomBytes(16).toString("hex")}.${ext}`;
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
+    const uploadDir = getUploadDir();
     await mkdir(uploadDir, { recursive: true });
     const diskPath = path.join(uploadDir, name);
     await writeFile(diskPath, buf);
 
-    const url = `/uploads/${name}`;
+    const url = uploadPublicUrl(name);
     return NextResponse.json({ url });
   } catch (e) {
     console.error(e);

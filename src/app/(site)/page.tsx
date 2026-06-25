@@ -77,6 +77,7 @@ export default async function HomePage() {
                 className="object-cover transition duration-700 group-hover:scale-[1.04]"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
+                unoptimized
               />
             ) : (
               <div className="flex h-full w-full flex-col items-center justify-center gap-4 bg-gradient-to-br from-zinc-800 to-black p-8 text-center">
