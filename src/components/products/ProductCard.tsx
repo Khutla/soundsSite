@@ -25,6 +25,7 @@ export function ProductCard({ product }: { product: ProductJson }) {
             fill
             className="object-cover transition duration-500 group-hover:scale-[1.03]"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            unoptimized
           />
         ) : (
           <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-950">

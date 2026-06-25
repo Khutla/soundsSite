@@ -48,7 +48,7 @@ export function ImageUploadField({ label, value, onChange, error }: Props) {
       <div className="mt-2 flex flex-wrap items-start gap-4">
         <div className="relative h-28 w-40 overflow-hidden rounded-lg border border-zinc-800 bg-zinc-950">
           {value ? (
-            <Image src={value} alt="" fill className="object-cover" sizes="160px" />
+            <Image src={value} alt="" fill className="object-cover" sizes="160px" unoptimized/>
           ) : (
             <div className="flex h-full w-full items-center justify-center text-zinc-600">
               No image

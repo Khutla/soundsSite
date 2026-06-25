@@ -129,7 +129,7 @@ export default async function HomePage() {
               <div className="flex gap-4">
                 <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-zinc-800">
                   {c.imageUrl ? (
-                    <Image src={c.imageUrl} alt="" fill className="object-cover" sizes="80px" />
+                    <Image src={c.imageUrl} alt={c.name} width={200} height={200} unoptimized />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-2xl text-zinc-600">
                       ♪
