@@ -12,7 +12,7 @@
     "db:seed": "tsx prisma/seed.ts"
   },
   "prisma": {
-    "seed": "node insert-admin.js --skip-generate"
+    "seed": ""
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
