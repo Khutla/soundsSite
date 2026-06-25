@@ -9,13 +9,12 @@
     "start": "next start",
     "lint": "eslint",
     "db:migrate": "prisma migrate dev",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "favicons": "node scripts/generate-favicons.mjs"
   },
-
   "prisma": {
     "seed": "echo 'Skipping deployment seed: database already initialized.'"
   },
-  
   "dependencies": {
     "@prisma/client": "^5.22.0",
     "bcryptjs": "^3.0.3",
@@ -33,7 +32,9 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "prisma": "5.22.0",
+    "sharp": "^0.35.2",
     "tailwindcss": "^4",
+    "to-ico": "^1.1.5",
     "tsx": "^4.21.0",
     "typescript": "^5"
   }
