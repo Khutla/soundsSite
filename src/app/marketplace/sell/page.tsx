@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 
 type ConditionValue = "New" | "Like New" | "Good" | "Fair";
@@ -117,6 +119,31 @@ export default function SellPage() {
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.14),_transparent_30%),linear-gradient(135deg,_#020617_0%,_#09090b_100%)] px-4 py-10 text-zinc-100 sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-6xl flex-col gap-8">
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[1.5rem] border border-zinc-800/80 bg-zinc-950/70 px-4 py-3">
+          <Link href="/" className="flex items-center gap-3">
+            <div className="relative h-12 w-12">
+              <Image
+                src="/MkH.png"
+                alt="MkhSounds Logo"
+                fill
+                className="object-contain"
+                sizes="48px"
+                priority
+              />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-white">MkhSounds</p>
+              <p className="text-xs text-zinc-500">Back to the storefront</p>
+            </div>
+          </Link>
+          <Link
+            href="/"
+            className="rounded-full border border-zinc-700 bg-zinc-900/70 px-4 py-2 text-sm font-semibold text-zinc-200 transition hover:border-amber-400 hover:text-amber-200"
+          >
+            Home
+          </Link>
+        </div>
+
         <section className="overflow-hidden rounded-[2rem] border border-zinc-800/80 bg-zinc-950/80 shadow-[0_30px_80px_rgba(0,0,0,0.45)] backdrop-blur">
           <div className="border-b border-zinc-800/80 bg-gradient-to-r from-zinc-900 via-zinc-950 to-zinc-900 px-6 py-8 sm:px-8 lg:px-10">
             <p className="inline-flex items-center rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.3em] text-amber-300">
@@ -143,6 +170,12 @@ export default function SellPage() {
                 <p className="mt-1 leading-6">
                   Our team will verify your gear and publish it in our 2nd Hand Equipment section soon.
                 </p>
+                <Link
+                  href="/"
+                  className="mt-4 inline-flex rounded-full bg-amber-500 px-4 py-2 font-semibold text-zinc-950 transition hover:bg-amber-400"
+                >
+                  Go home
+                </Link>
               </div>
             ) : null}
 
