@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CartBadge } from "@/components/layout/CartBadge";
+import { HeaderSearch } from "@/components/layout/HeaderSearch";
 import Image from "next/image";
 
 const links = [
@@ -9,6 +10,8 @@ const links = [
   { href: "/specials", label: "Specials" },
   { href: "/contact", label: "Contact" },
 ];
+
+const sellHereLink = { href: "/marketplace/sell", label: "Sell Here" };
 
 export function SiteHeader() {
   return (
@@ -20,6 +23,7 @@ export function SiteHeader() {
     src="/MkH.png"
     alt="MkhSounds Logo"
     fill
+    sizes="(max-width: 768px) 144px, 144px"
     className="object-contain drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]"
     priority
   />
@@ -44,6 +48,13 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          <Link
+            href={sellHereLink.href}
+            className="rounded-full border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm font-bold text-amber-300 shadow-[0_0_18px_rgba(251,191,36,0.18)] transition hover:border-amber-400 hover:bg-amber-500/20 hover:text-amber-200"
+          >
+            {sellHereLink.label}
+          </Link>
+          <HeaderSearch />
         </nav>
 
         <div className="flex items-center gap-3">
@@ -52,7 +63,7 @@ export function SiteHeader() {
       </div>
 
       <nav className="flex border-t border-zinc-800/60 px-4 py-2 md:hidden">
-        <div className="flex w-full flex-wrap justify-center gap-1">
+        <div className="flex w-full flex-wrap items-center justify-center gap-1">
           {links.map((l) => (
             <Link
               key={l.href}
@@ -62,6 +73,13 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
+          <Link
+            href={sellHereLink.href}
+            className="rounded-full border border-amber-500/40 bg-amber-500/10 px-2.5 py-1.5 text-xs font-bold text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.16)] hover:border-amber-400 hover:bg-amber-500/20 hover:text-amber-200"
+          >
+            {sellHereLink.label}
+          </Link>
+          <HeaderSearch />
         </div>
       </nav>
     </header>

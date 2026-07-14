@@ -51,3 +51,21 @@ model Product {
   @@map("products")
 }
 
+model SecondHandProduct {
+  id             String   @id @default(cuid())
+  title          String
+  price          Decimal
+  condition      String
+  description    String
+  sellerName     String   @map("seller_name")
+  sellerWhatsapp String   @map("seller_whatsapp")
+  location       String
+  imageUrls      String[] @default([]) @map("image_urls")
+  status         String   @default("PENDING")
+  category       String   @default("2nd Hand Equipment")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@map("second_hand_products")
+}
+

@@ -163,6 +163,45 @@ export default async function HomePage() {
         </div>
       </section>
 
+      <section className="mx-auto max-w-7xl px-4 pb-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/70 p-8 shadow-lg shadow-black/20">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.2em] text-amber-400">
+                Why MkhSounds
+              </p>
+              <h2 className="mt-3 text-2xl font-bold tracking-tight text-white">
+                Sound gear curated for real-world installs and daily listening.
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-400">
+                From compact carry setups to full-stage builds, we focus on dependable gear,
+                honest recommendations, and products that look as good as they sound.
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-3 lg:grid-cols-1">
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4">
+                <p className="text-lg font-semibold text-white">Expert picks</p>
+                <p className="mt-1 text-sm text-zinc-500">
+                  Hand-selected lines for clear, punchy performance.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4">
+                <p className="text-lg font-semibold text-white">Fast support</p>
+                <p className="mt-1 text-sm text-zinc-500">
+                  Helpful guidance from first enquiry to final install.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4">
+                <p className="text-lg font-semibold text-white">Built to move</p>
+                <p className="mt-1 text-sm text-zinc-500">
+                  Portable, practical, and ready for every setup.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="border-y border-zinc-800 bg-zinc-950/80">
         <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-end justify-between gap-4">

@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { findProducts } from "@/lib/products/query";
 import { serializeProduct } from "@/lib/serialize";
 import { ProductCard } from "@/components/products/ProductCard";
-import type { Prisma } from "@prisma/client";
 
 export const dynamic = "force-dynamic";
 
@@ -27,37 +27,12 @@ export default async function ShopPage({ searchParams }: Props) {
   const maxPrice =
     maxRaw !== undefined && maxRaw !== "" ? Number(maxRaw) : undefined;
 
-  const where: Prisma.ProductWhereInput = {};
-
-  if (categorySlug) {
-    where.category = { slug: categorySlug };
-  }
-
-  if (search) {
-    where.OR = [
-      { name: { contains: search } },
-      { description: { contains: search } },
-    ];
-  }
-
-  if (
-    minPrice !== undefined &&
-    !Number.isNaN(minPrice) &&
-    maxPrice !== undefined &&
-    !Number.isNaN(maxPrice)
-  ) {
-    where.price = { gte: minPrice, lte: maxPrice };
-  } else if (minPrice !== undefined && !Number.isNaN(minPrice)) {
-    where.price = { gte: minPrice };
-  } else if (maxPrice !== undefined && !Number.isNaN(maxPrice)) {
-    where.price = { lte: maxPrice };
-  }
-
   const [products, categories] = await Promise.all([
-    prisma.product.findMany({
-      where,
-      include: { category: true },
-      orderBy: { name: "asc" },
+    findProducts({
+      search,
+      categorySlug,
+      minPrice,
+      maxPrice,
     }),
     prisma.category.findMany({ orderBy: { name: "asc" } }),
   ]);
@@ -67,7 +42,7 @@ export default async function ShopPage({ searchParams }: Props) {
       <div className="max-w-2xl">
         <h1 className="text-3xl font-bold tracking-tight text-white">Shop</h1>
         <p className="mt-2 text-sm text-zinc-400">
-          Filter by category and price range, or search by name and description.
+          Filter by category and price range, or search by keywords — similar spellings still match.
         </p>
       </div>
 

@@ -1,15 +1,16 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { findProducts } from "@/lib/products/query";
 import { serializeProduct } from "@/lib/serialize";
 import { requireAdminApi } from "@/lib/admin-api";
 import { uniqueProductSlug } from "@/lib/slug";
-import { Prisma } from "@prisma/client";
 
 export async function GET(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
     const categorySlug = searchParams.get("category") ?? undefined;
-    const search = searchParams.get("search")?.trim();
+    const search =
+      searchParams.get("search")?.trim() ?? searchParams.get("q")?.trim();
     const minRaw = searchParams.get("minPrice");
     const maxRaw = searchParams.get("maxPrice");
     const featured = searchParams.get("featured") === "1";
@@ -18,44 +19,13 @@ export async function GET(req: Request) {
     const minPrice = minRaw != null && minRaw !== "" ? Number(minRaw) : undefined;
     const maxPrice = maxRaw != null && maxRaw !== "" ? Number(maxRaw) : undefined;
 
-    const where: Prisma.ProductWhereInput = {};
-
-    if (categorySlug) {
-      where.category = { slug: categorySlug };
-    }
-
-    if (search) {
-      where.OR = [
-        { name: { contains: search } },
-        { description: { contains: search } },
-      ];
-    }
-
-    if (
-      minPrice !== undefined &&
-      !Number.isNaN(minPrice) &&
-      maxPrice !== undefined &&
-      !Number.isNaN(maxPrice)
-    ) {
-      where.price = { gte: minPrice, lte: maxPrice };
-    } else if (minPrice !== undefined && !Number.isNaN(minPrice)) {
-      where.price = { gte: minPrice };
-    } else if (maxPrice !== undefined && !Number.isNaN(maxPrice)) {
-      where.price = { lte: maxPrice };
-    }
-
-    if (featured) {
-      where.featured = true;
-    }
-
-    if (specials) {
-      where.isSpecial = true;
-    }
-
-    const products = await prisma.product.findMany({
-      where,
-      include: { category: true },
-      orderBy: { updatedAt: "desc" },
+    const products = await findProducts({
+      categorySlug,
+      search,
+      minPrice,
+      maxPrice,
+      featured,
+      specials,
     });
 
     return NextResponse.json({
