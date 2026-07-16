@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -53,7 +53,6 @@ model Product {
 
 model SecondHandProduct {
   id             String   @id @default(cuid())
-  slug           String   @unique
   title          String
   price          Decimal
   condition      String
@@ -61,7 +60,7 @@ model SecondHandProduct {
   sellerName     String   @map("seller_name")
   sellerWhatsapp String   @map("seller_whatsapp")
   location       String
-  imageUrls      String   @default("[]") @map("image_urls")
+  imageUrls      String[] @default([]) @map("image_urls")
   status         String   @default("PENDING")
   category       String   @default("2nd Hand Equipment")
   createdAt      DateTime @default(now())
