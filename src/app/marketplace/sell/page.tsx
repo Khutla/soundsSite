@@ -36,6 +36,7 @@ const initialFormState: FormState = {
 export default function SellPage() {
   const [form, setForm] = useState<FormState>(initialFormState);
   const [images, setImages] = useState<File[]>([]);
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -51,11 +52,34 @@ export default function SellPage() {
     if (error) setError(null);
   }
 
-  function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
+  async function handleImageChange(event: ChangeEvent<HTMLInputElement>) {
     const selected = Array.from(event.target.files ?? []);
     if (!selected.length) return;
-    setImages((prev) => [...prev, ...selected]);
+
     if (error) setError(null);
+    setImages((prev) => [...prev, ...selected]);
+
+    const uploadedUrls: string[] = [];
+    for (const file of selected) {
+      const fd = new FormData();
+      fd.set("file", file);
+      try {
+        const res = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: fd,
+        });
+        const data = await res.json();
+        if (!res.ok || typeof data.url !== "string") {
+          throw new Error(typeof data.error === "string" ? data.error : "Image upload failed.");
+        }
+        uploadedUrls.push(data.url);
+      } catch (uploadError) {
+        setError(uploadError instanceof Error ? uploadError.message : "Image upload failed.");
+        return;
+      }
+    }
+
+    setImageUrls((prev) => [...prev, ...uploadedUrls]);
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -92,6 +116,7 @@ export default function SellPage() {
         sellerWhatsapp: trimmedSellerWhatsapp,
         location: trimmedLocation,
         imageCount: images.length,
+        imageUrls,
       };
 
       const response = await fetch("/api/marketplace/submit", {
@@ -101,6 +126,15 @@ export default function SellPage() {
       });
 
       const data = await response.json().catch(() => ({}));
+
+      if (response.status === 503) {
+        setError(
+          data?.error ||
+            "Marketplace temporarily unavailable. Please try again later or contact support."
+        );
+        setSubmitting(false);
+        return;
+      }
 
       if (!response.ok) {
         throw new Error(data?.error || "Your listing could not be submitted right now.");

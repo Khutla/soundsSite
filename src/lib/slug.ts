@@ -41,3 +41,9 @@ export async function uniqueCategorySlug(
     candidate = `${slug}-${n}`;
   }
 }
+
+export function marketplaceProductSlug(base: string, id: string) {
+  const baseSlug = slugify(base) || "listing";
+  const shortId = id.slice(0, 8);
+  return `${baseSlug}-${shortId}`;
+}

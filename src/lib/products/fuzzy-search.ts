@@ -1,6 +1,4 @@
-import type { Category, Product } from "@prisma/client";
-
-export type SearchableProduct = Product & { category?: Category | null };
+import type { SearchableProduct } from "@/lib/products/types";
 
 function normalize(text: string) {
   return text.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();

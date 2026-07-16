@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { MarketplaceListingInfoModal } from "@/components/admin/MarketplaceListingInfoModal";
 
 export const dynamic = "force-dynamic";
 
@@ -16,6 +17,7 @@ type MarketplaceListing = {
   location: string;
   status: string;
   createdAt: Date;
+  imageUrls: string[];
 };
 
 function formatCurrency(value: number | string) {
@@ -30,7 +32,7 @@ function formatCurrency(value: number | string) {
 async function getListings(status: StatusFilter) {
   const where = status === "ALL" ? {} : { status };
 
-  return prisma.secondHandProduct.findMany({
+  const listings = await prisma.secondHandProduct.findMany({
     where,
     orderBy: { createdAt: "desc" },
     select: {
@@ -44,8 +46,15 @@ async function getListings(status: StatusFilter) {
       location: true,
       status: true,
       createdAt: true,
+      imageUrls: true,
     },
-  }) as Promise<MarketplaceListing[]>;
+  });
+
+  return listings.map((listing) => ({
+    ...listing,
+    price: Number(listing.price),
+    imageUrls: JSON.parse(listing.imageUrls || "[]"),
+  }));
 }
 
 export default async function MarketplaceAdminPage({
@@ -58,6 +67,33 @@ export default async function MarketplaceAdminPage({
   const validStatus = ["ALL", "PENDING", "APPROVED", "DECLINED"].includes(statusFilter)
     ? statusFilter
     : "ALL";
+  // If the Prisma model wasn't generated (schema changed but client not updated),
+  // prisma.secondHandProduct will be undefined which causes a runtime TypeError.
+  const hasSecondHand = Boolean((prisma as unknown as Record<string, unknown>).secondHandProduct);
+
+  if (!hasSecondHand) {
+    return (
+      <div className="space-y-6">
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/70 p-6">
+          <h1 className="text-2xl font-semibold text-white">Marketplace not configured</h1>
+          <p className="mt-2 text-sm text-zinc-400">
+            The database model for second-hand listings is not available in your Prisma client.
+            This usually means the Prisma schema changed but the client wasn&apos;t regenerated or
+            migrations weren&apos;t applied.
+          </p>
+          <div className="mt-4 rounded-md bg-zinc-950/60 p-4 text-sm text-zinc-200">
+            <p className="font-semibold">Quick fixes</p>
+            <ol className="mt-2 list-inside list-decimal space-y-1 text-zinc-400">
+              <li>Run <code>npx prisma migrate dev</code> to apply migrations (if needed).</li>
+              <li>Run <code>npx prisma generate</code> to regenerate the Prisma client.</li>
+              <li>Restart the Next.js dev server.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   const listings = await getListings(validStatus);
 
   const filters: Array<{ value: StatusFilter; label: string }> = [
@@ -76,24 +112,30 @@ export default async function MarketplaceAdminPage({
             Review seller listings and approve or decline them before publishing.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          {filters.map((filter) => {
-            const active = validStatus === filter.value;
-            return (
-              <Link
-                key={filter.value}
-                href={`/admin/marketplace${filter.value === "ALL" ? "" : `?status=${filter.value.toLowerCase()}`}`}
-                className={`rounded-full px-3 py-2 text-sm font-medium transition ${
-                  active
-                    ? "bg-amber-500 text-zinc-950"
-                    : "border border-zinc-700 bg-zinc-900/70 text-zinc-300 hover:border-zinc-600"
-                }`}
+        <form method="get" action="/admin/marketplace" className="flex items-center gap-3">
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-zinc-300">Status</span>
+            <label className="text-sm text-zinc-300">
+              <select
+                name="status"
+                defaultValue={validStatus}
+                className="rounded-2xl border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none ring-amber-500/50 focus:border-amber-400 focus:ring-2"
               >
-                {filter.label}
-              </Link>
-            );
-          })}
-        </div>
+                {filters.map((filter) => (
+                  <option key={filter.value} value={filter.value.toLowerCase()}>
+                    {filter.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <button
+            type="submit"
+            className="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-zinc-950 hover:bg-amber-400"
+          >
+            Apply
+          </button>
+        </form>
       </div>
 
       <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/70">
@@ -106,6 +148,7 @@ export default async function MarketplaceAdminPage({
                 <th className="px-4 py-3 font-semibold">Price</th>
                 <th className="px-4 py-3 font-semibold">Condition</th>
                 <th className="px-4 py-3 font-semibold">Location</th>
+                <th className="px-4 py-3 font-semibold">Info</th>
                 <th className="px-4 py-3 font-semibold">Status</th>
                 <th className="px-4 py-3 font-semibold">Actions</th>
               </tr>
@@ -124,6 +167,9 @@ export default async function MarketplaceAdminPage({
                   <td className="px-4 py-3">{formatCurrency(listing.price)}</td>
                   <td className="px-4 py-3">{listing.condition}</td>
                   <td className="px-4 py-3">{listing.location}</td>
+                  <td className="px-4 py-3">
+                    <MarketplaceListingInfoModal listing={listing} />
+                  </td>
                   <td className="px-4 py-3">
                     <span className="rounded-full border border-zinc-700 px-2.5 py-1 text-xs font-semibold uppercase tracking-wide text-zinc-300">
                       {listing.status}

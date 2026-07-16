@@ -17,6 +17,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Invalid request." }, { status: 400 });
     }
 
+    // Defensive: ensure the Prisma model exists before attempting to update.
+    if (!(prisma as unknown as Record<string, unknown>).secondHandProduct) {
+      return NextResponse.json(
+        { error: "Marketplace model not available. Run prisma generate/migrate." },
+        { status: 503 }
+      );
+    }
+
     await prisma.secondHandProduct.update({
       where: { id },
       data: { status },

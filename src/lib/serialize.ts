@@ -1,21 +1,91 @@
-import type { Category, Product } from "@prisma/client";
+import type { Category } from "@prisma/client";
+import type { SearchableProduct } from "@/lib/products/types";
+import { slugify } from "@/lib/slug";
 
-export type ProductJson = Omit<Product, "price" | "specialPrice"> & {
+export type CategoryJson = {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  imageUrl: string | null;
+};
+
+export type ProductJson = {
+  id: string;
+  slug: string;
+  name: string;
+  description: string;
+  imageUrl: string | null;
+  categoryId?: string;
   price: number;
   specialPrice: number | null;
   category?: CategoryJson;
+  isSpecial?: boolean;
+  featured?: boolean;
+  imageUrls?: string[];
+  source: "product" | "marketplace";
+  condition?: string;
+  sellerName?: string;
+  sellerWhatsapp?: string;
+  location?: string;
 };
 
-export type CategoryJson = Omit<Category, never>;
+function parseImageUrls(value: string | null | undefined) {
+  if (!value) return [];
 
-export function serializeProduct(
-  p: Product & { category?: Category }
-): ProductJson {
+  try {
+    const parsed = JSON.parse(value);
+    return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+export function serializeProduct(p: SearchableProduct): ProductJson {
+  if ("title" in p) {
+    const imageUrls = parseImageUrls(p.imageUrls);
+
+    return {
+      id: p.id,
+      slug: p.slug,
+      name: p.title,
+      description: p.description,
+      price: Number(p.price),
+      specialPrice: null,
+      imageUrl: p.imageUrl ?? null,
+      imageUrls,
+      category: p.category
+        ? {
+            id: p.id,
+            name: p.category.name,
+            slug: p.category.slug,
+            description: null,
+            imageUrl: null,
+          }
+        : undefined,
+      isSpecial: false,
+      featured: false,
+      source: "marketplace",
+      condition: p.condition,
+      sellerName: p.sellerName,
+      sellerWhatsapp: p.sellerWhatsapp,
+      location: p.location,
+    };
+  }
+
   return {
-    ...p,
+    id: p.id,
+    slug: p.slug,
+    name: p.name,
+    description: p.description,
+    imageUrl: p.imageUrl ?? null,
+    categoryId: p.categoryId,
     price: Number(p.price),
     specialPrice: p.specialPrice != null ? Number(p.specialPrice) : null,
     category: p.category ? serializeCategory(p.category) : undefined,
+    isSpecial: p.isSpecial,
+    featured: p.featured,
+    source: "product",
   };
 }
 

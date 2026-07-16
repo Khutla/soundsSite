@@ -3,16 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { serializeProduct } from "@/lib/serialize";
 import { requireAdminApi } from "@/lib/admin-api";
 import { uniqueProductSlug } from "@/lib/slug";
+import { findProductBySlug } from "@/lib/products/query";
 
 type Ctx = { params: Promise<{ slug: string }> };
 
 export async function GET(_req: Request, ctx: Ctx) {
   try {
     const { slug } = await ctx.params;
-    const product = await prisma.product.findUnique({
-      where: { slug },
-      include: { category: true },
-    });
+    const product = await findProductBySlug(slug);
     if (!product) {
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     }
