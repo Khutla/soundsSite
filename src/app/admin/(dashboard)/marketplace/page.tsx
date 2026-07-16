@@ -53,7 +53,7 @@ async function getListings(status: StatusFilter) {
   return listings.map((listing) => ({
     ...listing,
     price: Number(listing.price),
-    imageUrls: JSON.parse(listing.imageUrls || "[]"),
+    imageUrls: JSON.parse(listing.imageUrls as string || "[]") as string[],
   }));
 }
 
