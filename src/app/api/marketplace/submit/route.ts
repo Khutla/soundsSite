@@ -70,7 +70,7 @@ export async function POST(request: Request) {
         sellerName,
         sellerWhatsapp,
         location,
-        imageUrls: JSON.stringify(imageUrls),
+        imageUrls,
       },
     });
 
