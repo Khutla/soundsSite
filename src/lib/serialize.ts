@@ -1,6 +1,5 @@
 import type { Category } from "@prisma/client";
 import type { SearchableProduct } from "@/lib/products/types";
-import { slugify } from "@/lib/slug";
 
 export type CategoryJson = {
   id: string;
@@ -30,8 +29,9 @@ export type ProductJson = {
   location?: string;
 };
 
-function parseImageUrls(value: string | null | undefined) {
+function parseImageUrls(value: string | string[] | null | undefined) {
   if (!value) return [];
+  if (Array.isArray(value)) return value.filter((item): item is string => typeof item === "string");
 
   try {
     const parsed = JSON.parse(value);

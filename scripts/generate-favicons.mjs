@@ -1,4 +1,4 @@
-import { readFile, writeFile } from "fs/promises";
+import { writeFile } from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import sharp from "sharp";

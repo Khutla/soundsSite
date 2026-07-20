@@ -53,6 +53,7 @@ model Product {
 
 model SecondHandProduct {
   id             String   @id @default(cuid())
+  slug           String   @unique
   title          String
   price          Decimal
   condition      String

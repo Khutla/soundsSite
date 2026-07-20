@@ -96,20 +96,17 @@ function MessageBubble({ message }: { message: ChatMessage }) {
 
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
-  const [messages, setMessages] = useState<ChatMessage[]>([WELCOME_MESSAGE]);
+  const [messages, setMessages] = useState<ChatMessage[]>(() => {
+    const stored = loadChatMessages();
+    return stored.length > 0 ? stored : [WELCOME_MESSAGE];
+  });
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hydrated, setHydrated] = useState(false);
+  const [hydrated] = useState(true);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    const stored = loadChatMessages();
-    setMessages(stored.length > 0 ? stored : [WELCOME_MESSAGE]);
-    setHydrated(true);
-  }, []);
 
   useEffect(() => {
     if (!hydrated) return;

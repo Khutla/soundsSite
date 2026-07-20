@@ -1,24 +1,9 @@
-import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { MarketplaceListingInfoModal } from "@/components/admin/MarketplaceListingInfoModal";
 
 export const dynamic = "force-dynamic";
 
 type StatusFilter = "ALL" | "PENDING" | "APPROVED" | "DECLINED";
-
-type MarketplaceListing = {
-  id: string;
-  title: string;
-  price: number | string;
-  condition: string;
-  description: string;
-  sellerName: string;
-  sellerWhatsapp: string;
-  location: string;
-  status: string;
-  createdAt: Date;
-  imageUrls: string[];
-};
 
 function formatCurrency(value: number | string) {
   const amount = typeof value === "number" ? value : Number(value);

@@ -1,11 +1,13 @@
 import { prisma } from "@/lib/prisma";
-import type { Category, Product, Prisma, SecondHandProduct } from "@prisma/client";
+import type { Prisma, SecondHandProduct } from "@prisma/client";
 import { fuzzyMatchProducts } from "@/lib/products/fuzzy-search";
 import type { SearchableProduct } from "@/lib/products/types";
 import { slugify } from "@/lib/slug";
 
-function parseMarketplaceImageUrls(value: string | null | undefined) {
+function parseMarketplaceImageUrls(value: string | string[] | null | undefined) {
   if (!value) return [];
+  if (Array.isArray(value)) return value.filter((item): item is string => typeof item === "string");
+
   try {
     const parsed = JSON.parse(value);
     return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];

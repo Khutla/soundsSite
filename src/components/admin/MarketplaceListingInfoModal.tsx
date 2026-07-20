@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState } from "react";
 
 type MarketplaceListing = {
@@ -89,12 +90,15 @@ export function MarketplaceListingInfoModal({ listing }: { listing: MarketplaceL
                 {listing.imageUrls.length > 0 ? (
                   <div className="mt-4 grid gap-3 sm:grid-cols-2">
                     {listing.imageUrls.map((url, index) => (
-                      <div key={index} className="overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
-                        <img
-                          src={url}
-                          alt={`Listing image ${index + 1}`}
-                          className="h-44 w-full object-cover"
-                        />
+                      <div key={index} className="relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950">
+                        <div className="relative h-44 w-full">
+                          <Image
+                            src={url}
+                            alt={`Listing image ${index + 1}`}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>
