@@ -22,10 +22,11 @@ export type ProductJson = {
   isSpecial?: boolean;
   featured?: boolean;
   imageUrls?: string[];
+  sellerType?: string | null;
   source: "product" | "marketplace";
   condition?: string;
   sellerName?: string;
-  sellerWhatsapp?: string;
+  sellerPhone?: string;
   location?: string;
 };
 
@@ -68,7 +69,8 @@ export function serializeProduct(p: SearchableProduct): ProductJson {
       source: "marketplace",
       condition: p.condition,
       sellerName: p.sellerName,
-      sellerWhatsapp: p.sellerWhatsapp,
+      sellerPhone: (p as any).sellerPhone,
+      sellerType: (p as any).sellerType ?? null,
       location: p.location,
     };
   }

@@ -4,7 +4,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -53,15 +53,17 @@ model Product {
 
 model SecondHandProduct {
   id             String   @id @default(cuid())
-  slug           String   @unique
+  slug           String?   @unique
   title          String
   price          Decimal
   condition      String
   description    String
-  sellerName     String   @map("seller_name")
-  sellerWhatsapp String   @map("seller_whatsapp")
-  location       String
-  imageUrls      String[] @default([]) @map("image_urls")
+  sellerType     String     @default("INDIVIDUAL")
+  sellerName     String?  @map("seller_name")
+  // Migration created the column `seller_whatsapp`; map our field to it.
+  sellerPhone    String?  @map("seller_whatsapp")
+  location       String?
+  imageUrls      String   @default("[]") @map("image_urls")
   status         String   @default("PENDING")
   category       String   @default("2nd Hand Equipment")
   createdAt      DateTime @default(now())

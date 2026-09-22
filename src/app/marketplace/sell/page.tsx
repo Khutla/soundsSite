@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
+import { useMemo, useState, type ChangeEvent, type FormEvent, useEffect } from "react";
 
 type ConditionValue = "New" | "Like New" | "Good" | "Fair";
 
@@ -12,7 +12,7 @@ type FormState = {
   condition: ConditionValue | "";
   description: string;
   sellerName: string;
-  sellerWhatsapp: string;
+  sellerPhone: string;
   location: string;
 };
 
@@ -29,7 +29,7 @@ const initialFormState: FormState = {
   condition: "",
   description: "",
   sellerName: "",
-  sellerWhatsapp: "",
+  sellerPhone: "",
   location: "",
 };
 
@@ -40,6 +40,7 @@ export default function SellPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [showWarning, setShowWarning] = useState(true);
 
   const imageSummary = useMemo(() => {
     if (!images.length) return "Add at least one clear photo of your gear";
@@ -64,7 +65,7 @@ export default function SellPage() {
       const fd = new FormData();
       fd.set("file", file);
       try {
-        const res = await fetch("/api/admin/upload", {
+        const res = await fetch("/api/uploads", {
           method: "POST",
           body: fd,
         });
@@ -90,11 +91,11 @@ export default function SellPage() {
     const trimmedTitle = form.title.trim();
     const trimmedDescription = form.description.trim();
     const trimmedSellerName = form.sellerName.trim();
-    const trimmedSellerWhatsapp = form.sellerWhatsapp.trim();
+    const trimmedSellerPhone = form.sellerPhone.trim();
     const trimmedLocation = form.location.trim();
     const numericPrice = Number(form.price);
 
-    if (!trimmedTitle || !form.price || !form.condition || !trimmedDescription || !trimmedSellerName || !trimmedSellerWhatsapp || !trimmedLocation || images.length === 0) {
+    if (!trimmedTitle || !form.price || !form.condition || !trimmedDescription || !trimmedSellerName || !trimmedSellerPhone || !trimmedLocation || images.length === 0) {
       setError("Please complete every required field and attach at least one image before submitting.");
       return;
     }
@@ -113,7 +114,7 @@ export default function SellPage() {
         condition: form.condition,
         description: trimmedDescription,
         sellerName: trimmedSellerName,
-        sellerWhatsapp: trimmedSellerWhatsapp,
+        sellerPhone: trimmedSellerPhone,
         location: trimmedLocation,
         imageCount: images.length,
         imageUrls,
@@ -152,6 +153,30 @@ export default function SellPage() {
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.14),_transparent_30%),linear-gradient(135deg,_#020617_0%,_#09090b_100%)] px-4 py-10 text-zinc-100 sm:px-6 lg:px-8">
+      {showWarning ? (
+        <div className="fixed inset-0 z-50 flex items-start justify-center p-6">
+          <div className="absolute inset-0 bg-black/50" onClick={() => setShowWarning(false)} />
+          <div className="relative max-w-2xl rounded-2xl border border-amber-400/30 bg-zinc-950/95 p-4 text-sm text-zinc-100 shadow-lg">
+            <div className="flex items-start gap-3">
+              <div className="flex-1">
+                <p className="font-semibold text-amber-300">⚠️ Stay Safe When Buying &amp; Selling</p>
+                <p className="mt-2 text-sm text-zinc-300">
+                  Beware of scammers. Always arrange to meet in a well-lit, public location, and never transfer money or release equipment before inspecting the item in person.
+                </p>
+              </div>
+              <div className="flex-shrink-0">
+                <button
+                  aria-label="Close warning"
+                  onClick={() => setShowWarning(false)}
+                  className="rounded-full bg-zinc-800/60 px-3 py-2 text-sm font-semibold text-zinc-200 hover:bg-zinc-800/80"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      ) : null}
       <div className="mx-auto flex max-w-6xl flex-col gap-8">
         <div className="flex flex-wrap items-center justify-between gap-3 rounded-[1.5rem] border border-zinc-800/80 bg-zinc-950/70 px-4 py-3">
           <Link href="/" className="flex items-center gap-3">
@@ -320,8 +345,8 @@ export default function SellPage() {
                     <span className="mb-2 block text-sm font-medium text-zinc-200">WhatsApp Number</span>
                     <input
                       required
-                      value={form.sellerWhatsapp}
-                      onChange={(e) => updateField("sellerWhatsapp", e.target.value)}
+                      value={form.sellerPhone}
+                      onChange={(e) => updateField("sellerPhone", e.target.value)}
                       className="w-full rounded-2xl border border-zinc-700 bg-zinc-900/70 px-4 py-3 text-sm text-white outline-none transition focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30"
                       placeholder="071 234 5678"
                     />

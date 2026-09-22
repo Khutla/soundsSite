@@ -10,7 +10,7 @@ type MarketplaceListing = {
   condition: string;
   description: string;
   sellerName: string;
-  sellerWhatsapp: string;
+  sellerPhone: string;
   location: string;
   status: string;
   createdAt: Date;
@@ -68,7 +68,7 @@ export function MarketplaceListingInfoModal({ listing }: { listing: MarketplaceL
                 <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4">
                   <p className="text-xs uppercase tracking-[0.24em] text-zinc-400">Seller</p>
                   <p className="mt-1 font-medium text-white">{listing.sellerName}</p>
-                  <p className="mt-1 text-zinc-400">{listing.sellerWhatsapp}</p>
+                  <p className="mt-1 text-zinc-400">{listing.sellerPhone}</p>
                 </div>
                 <div className="rounded-3xl border border-zinc-800 bg-zinc-900/80 p-4">
                   <p className="text-xs uppercase tracking-[0.24em] text-zinc-400">Status</p>

@@ -4,12 +4,12 @@ import { fuzzyMatchProducts } from "@/lib/products/fuzzy-search";
 import type { SearchableProduct } from "@/lib/products/types";
 import { slugify } from "@/lib/slug";
 
-function parseMarketplaceImageUrls(value: string | string[] | null | undefined) {
+function parseMarketplaceImageUrls(value: any) {
   if (!value) return [];
   if (Array.isArray(value)) return value.filter((item): item is string => typeof item === "string");
 
   try {
-    const parsed = JSON.parse(value);
+    const parsed = typeof value === "string" ? JSON.parse(value) : value;
     return Array.isArray(parsed) ? parsed.filter((item): item is string => typeof item === "string") : [];
   } catch {
     return [];
@@ -114,7 +114,7 @@ export async function findProductBySlug(
     price: listing.price,
     condition: listing.condition,
     sellerName: listing.sellerName,
-    sellerWhatsapp: listing.sellerWhatsapp,
+    sellerPhone: (listing as any).sellerPhone,
     location: listing.location,
     imageUrls: listing.imageUrls,
     status: listing.status,
@@ -150,17 +150,17 @@ export async function findProducts(options: ProductQueryOptions = {}) {
       return listings
         .filter((listing) => passesMarketplaceFilter(listing, filterOptions))
         .map((listing): SearchableProduct => {
-          const imageUrls = parseMarketplaceImageUrls(listing.imageUrls);
+            const imageUrls = parseMarketplaceImageUrls(listing.imageUrls);
           return {
             id: listing.id,
             slug: listing.slug,
             description: listing.description,
             price: listing.price,
-            condition: listing.condition,
-            sellerName: listing.sellerName,
-            sellerWhatsapp: listing.sellerWhatsapp,
+              condition: listing.condition,
+              sellerName: listing.sellerName,
+              sellerPhone: listing.sellerPhone,
             location: listing.location,
-            imageUrls: listing.imageUrls,
+              imageUrls: listing.imageUrls,
             status: listing.status,
             title: listing.title,
             createdAt: listing.createdAt,

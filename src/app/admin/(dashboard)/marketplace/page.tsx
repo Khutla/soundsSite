@@ -27,7 +27,7 @@ async function getListings(status: StatusFilter) {
       condition: true,
       description: true,
       sellerName: true,
-      sellerWhatsapp: true,
+      sellerPhone: true,
       location: true,
       status: true,
       createdAt: true,
@@ -151,7 +151,7 @@ export default async function MarketplaceAdminPage({
                   </td>
                   <td className="px-4 py-3">
                     <p className="font-medium">{listing.sellerName}</p>
-                    <p className="mt-1 text-xs text-zinc-500">{listing.sellerWhatsapp}</p>
+                    <p className="mt-1 text-xs text-zinc-500">{listing.sellerPhone}</p>
                   </td>
                   <td className="px-4 py-3">{formatCurrency(listing.price)}</td>
                   <td className="px-4 py-3">{listing.condition}</td>

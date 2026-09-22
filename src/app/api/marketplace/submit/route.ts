@@ -9,7 +9,7 @@ type SubmitBody = {
   condition?: unknown;
   description?: unknown;
   sellerName?: unknown;
-  sellerWhatsapp?: unknown;
+  sellerPhone?: unknown;
   location?: unknown;
   imageCount?: unknown;
   imageUrls?: unknown;
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const title = typeof body.title === "string" ? body.title.trim() : "";
     const description = typeof body.description === "string" ? body.description.trim() : "";
     const sellerName = typeof body.sellerName === "string" ? body.sellerName.trim() : "";
-    const sellerWhatsapp = typeof body.sellerWhatsapp === "string" ? body.sellerWhatsapp.trim() : "";
+    const sellerPhone = typeof body.sellerPhone === "string" ? body.sellerPhone.trim() : "";
     const location = typeof body.location === "string" ? body.location.trim() : "";
     const condition = typeof body.condition === "string" ? body.condition.trim() : "";
     const imageUrls = Array.isArray(body.imageUrls)
@@ -35,7 +35,7 @@ export async function POST(request: Request) {
     const imageCount = typeof body.imageCount === "number" ? body.imageCount : imageUrls.length;
     const priceValue = typeof body.price === "number" ? body.price : Number(body.price);
 
-    if (!title || !description || !sellerName || !sellerWhatsapp || !location || !condition || imageUrls.length < 1 || imageCount < 1 || !Number.isFinite(priceValue) || priceValue <= 0) {
+    if (!title || !description || !sellerName || !sellerPhone || !location || !condition || imageUrls.length < 1 || imageCount < 1 || !Number.isFinite(priceValue) || priceValue <= 0) {
       return NextResponse.json({ error: "Missing or invalid required fields." }, { status: 400 });
     }
 
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
         condition,
         description,
         sellerName,
-        sellerWhatsapp,
+        sellerPhone,
         location,
         imageUrls,
         status: "PENDING",
