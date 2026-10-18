@@ -33,8 +33,7 @@ export default async function CategoriesPage() {
                   alt=""
                   fill
                   className="object-cover opacity-90 transition group-hover:opacity-100"
-                  sizes="(max-width: 1024px) 100vw, 33vw"
-                  unoptimized
+                  sizes="(max-width: 1024px) 100vw, 33vw" unoptimized
                 />
               ) : (
                 <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-800 to-black text-5xl text-zinc-700">

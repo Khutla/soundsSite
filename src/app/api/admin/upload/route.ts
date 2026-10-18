@@ -9,7 +9,7 @@ const MAX_BYTES = 5 * 1024 * 1024;
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
 
 export async function POST(req: Request) {
-  const auth = await requireAdminApi();
+  const auth = await requireAdminApi(req);
   if (auth instanceof Response) return auth;
 
   try {

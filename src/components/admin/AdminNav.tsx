@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
+import { ensureBrowserCsrfToken, withCsrfHeader } from "@/lib/csrf";
 
 const items = [
   { href: "/admin", label: "Dashboard" },
@@ -18,7 +19,11 @@ export function AdminNav({ email }: { email: string }) {
   const router = useRouter();
 
   async function logout() {
-    await fetch("/api/auth/logout", { method: "POST" });
+    const csrfToken = await ensureBrowserCsrfToken();
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      headers: withCsrfHeader(undefined, csrfToken ?? undefined),
+    });
     router.replace("/admin/login");
     router.refresh();
   }

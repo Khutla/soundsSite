@@ -49,7 +49,7 @@ export async function POST(request: Request) {
         sellerName,
         sellerPhone,
         location,
-        imageUrls,
+        imageUrls: JSON.stringify(imageUrls),
         status: "PENDING",
         category: "2nd Hand Equipment",
         slug,

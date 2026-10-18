@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { ensureBrowserCsrfToken, withCsrfHeader } from "@/lib/csrf";
 
 type Props = {
   label: string;
@@ -21,10 +22,13 @@ export function ImageUploadField({ label, value, onChange, error }: Props) {
     setLocalErr(null);
     setBusy(true);
     try {
+      const csrfToken = await ensureBrowserCsrfToken();
       const fd = new FormData();
       fd.set("file", file);
+      if (csrfToken) fd.set("csrfToken", csrfToken);
       const res = await fetch("/api/admin/upload", {
         method: "POST",
+        headers: withCsrfHeader(undefined, csrfToken ?? undefined),
         body: fd,
       });
       const data = await res.json();

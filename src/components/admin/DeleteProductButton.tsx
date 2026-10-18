@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ensureBrowserCsrfToken, withCsrfHeader } from "@/lib/csrf";
 
 export function DeleteProductButton({ slug, name }: { slug: string; name: string }) {
   const router = useRouter();
@@ -11,8 +12,10 @@ export function DeleteProductButton({ slug, name }: { slug: string; name: string
     if (!confirm(`Delete “${name}”? This cannot be undone.`)) return;
     setBusy(true);
     try {
+      const csrfToken = await ensureBrowserCsrfToken();
       const res = await fetch(`/api/products/${encodeURIComponent(slug)}`, {
         method: "DELETE",
+        headers: withCsrfHeader(undefined, csrfToken ?? undefined),
       });
       if (!res.ok) {
         alert("Could not delete product.");

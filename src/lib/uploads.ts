@@ -5,7 +5,12 @@ const UPLOAD_SEGMENT = "uploads";
 export function getUploadDir(): string {
   const fromEnv = process.env.UPLOAD_DIR?.trim();
   if (fromEnv) return fromEnv;
-  return path.join(process.cwd(), "public", UPLOAD_SEGMENT);
+
+  return path.join(
+    /* turbopackIgnore: true */ process.cwd(),
+    "public",
+    UPLOAD_SEGMENT
+  );
 }
 
 export function isSafeUploadFilename(filename: string): boolean {

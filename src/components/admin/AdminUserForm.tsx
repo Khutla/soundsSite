@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { ensureBrowserCsrfToken, withCsrfHeader } from "@/lib/csrf";
 
 export function AdminUserForm() {
   const router = useRouter();
@@ -22,10 +23,11 @@ export function AdminUserForm() {
 
     setLoading(true);
     try {
+      const csrfToken = await ensureBrowserCsrfToken();
       const res = await fetch("/api/admin/users", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        headers: withCsrfHeader({ "Content-Type": "application/json" }, csrfToken ?? undefined),
+        body: JSON.stringify({ email, password, csrfToken: csrfToken ?? undefined }),
       });
       const data = await res.json();
       if (!res.ok) {

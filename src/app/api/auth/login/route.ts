@@ -2,41 +2,35 @@ import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { COOKIE_NAME, signAdminToken } from "@/lib/auth";
-
+import { ensureBootstrapAdmin } from "@/lib/admin-bootstrap";
+import { normalizeAdminEmail } from "@/lib/password";
 
 export async function POST(req: Request) {
- 
   try {
-    const { email, password } = await req.json();
+    const body = await req.json();
+    const email = normalizeAdminEmail(
+      typeof body.email === "string" ? body.email : ""
+    );
+    const password = typeof body.password === "string" ? body.password : "";
 
-    // ==========================================
-    // TEMPORARY ADMIN CREATION BYPASS (Safe & Clean)
-    // ==========================================
-    try {
-      const existingAdmin = await prisma.adminUser.findUnique({
-        where: { email: "admin@mkhsounds.co.za" }
-      });
-
-      if (!existingAdmin) {
-        // We use 'bcrypt' here directly, leveraging your top-of-file import!
-        const temporaryHash = await bcrypt.hash("admin123", 10);
-        
-        await prisma.adminUser.create({
-          data: {
-            email: "admin@mkhsounds.co.za",
-            passwordHash: temporaryHash,
-          }
-        });
-        console.log("=== LIVE ADMIN USER CREATED SUCCESSFULLY ===");
-      }
-    } catch (bypassError) {
-      // If the bypass fails, log it but don't crash the entire login page
-      console.error("Bypass background warning:", bypassError);
+    if (!email || !email.includes("@")) {
+      return NextResponse.json({ error: "Valid email is required." }, { status: 400 });
     }
-    // ==========================================
 
-    // Your standard login code continues below
-    const admin = await prisma.adminUser.findUnique({ where: { email } });
+    if (!password) {
+      return NextResponse.json({ error: "Password is required." }, { status: 400 });
+    }
+
+    let admin = await prisma.adminUser.findUnique({ where: { email } });
+
+    if (!admin) {
+      const bootstrapAdmin = await ensureBootstrapAdmin();
+      if (!bootstrapAdmin || bootstrapAdmin.email !== email) {
+        return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
+      }
+      admin = await prisma.adminUser.findUnique({ where: { email } });
+    }
+
     if (!admin) {
       return NextResponse.json({ error: "Invalid credentials." }, { status: 401 });
     }
@@ -51,7 +45,7 @@ export async function POST(req: Request) {
       ok: true,
       user: { id: admin.id, email: admin.email },
     });
-    
+
     res.cookies.set(COOKIE_NAME, token, {
       httpOnly: true,
       path: "/",
@@ -59,11 +53,9 @@ export async function POST(req: Request) {
       sameSite: "lax",
       secure: process.env.NODE_ENV === "production",
     });
-    
-    return res;
 
+    return res;
   } catch (error) {
-    // This logs the exact error causing "Something went wrong" to your terminal!
     console.error("CRITICAL ROUTE ERROR:", error);
     return NextResponse.json({ error: "Something went wrong." }, { status: 500 });
   }

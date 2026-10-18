@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState, type ChangeEvent, type FormEvent, useEffect } from "react";
+import { useMemo, useState, type ChangeEvent, type FormEvent } from "react";
 
 type ConditionValue = "New" | "Like New" | "Good" | "Fair";
 

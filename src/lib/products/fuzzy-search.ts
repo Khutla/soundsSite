@@ -87,10 +87,11 @@ function scoreProduct(product: SearchableProduct, query: string) {
   const tokens = tokenize(query);
   if (tokens.length === 0) return 0;
 
+  const slugText = product.slug ? product.slug.replace(/-/g, " ") : "";
   const fields = [
     { text: product.name, weight: 1 },
     { text: product.category?.name ?? "", weight: 0.75 },
-    { text: product.slug.replace(/-/g, " "), weight: 0.65 },
+    { text: slugText, weight: 0.65 },
     { text: product.description, weight: 0.35 },
   ];
 

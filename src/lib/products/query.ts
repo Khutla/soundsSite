@@ -4,7 +4,7 @@ import { fuzzyMatchProducts } from "@/lib/products/fuzzy-search";
 import type { SearchableProduct } from "@/lib/products/types";
 import { slugify } from "@/lib/slug";
 
-function parseMarketplaceImageUrls(value: any) {
+function parseMarketplaceImageUrls(value: unknown): string[] {
   if (!value) return [];
   if (Array.isArray(value)) return value.filter((item): item is string => typeof item === "string");
 
@@ -109,12 +109,12 @@ export async function findProductBySlug(
 
   return {
     id: listing.id,
-    slug: listing.slug,
+    slug: listing.slug ?? "",
     description: listing.description,
     price: listing.price,
     condition: listing.condition,
     sellerName: listing.sellerName,
-    sellerPhone: (listing as any).sellerPhone,
+    sellerPhone: listing.sellerPhone,
     location: listing.location,
     imageUrls: listing.imageUrls,
     status: listing.status,
@@ -123,6 +123,7 @@ export async function findProductBySlug(
     updatedAt: listing.updatedAt,
     name: listing.title,
     imageUrl: imageUrls[0] ?? null,
+    sellerType: listing.sellerType ?? "INDIVIDUAL",
     category: { name: listing.category, slug: marketplaceCategorySlug(listing.category) },
   } as SearchableProduct;
 }
@@ -153,20 +154,21 @@ export async function findProducts(options: ProductQueryOptions = {}) {
             const imageUrls = parseMarketplaceImageUrls(listing.imageUrls);
           return {
             id: listing.id,
-            slug: listing.slug,
+            slug: listing.slug ?? "",
             description: listing.description,
             price: listing.price,
-              condition: listing.condition,
-              sellerName: listing.sellerName,
-              sellerPhone: listing.sellerPhone,
+            condition: listing.condition,
+            sellerName: listing.sellerName,
+            sellerPhone: listing.sellerPhone,
             location: listing.location,
-              imageUrls: listing.imageUrls,
+            imageUrls: listing.imageUrls,
             status: listing.status,
             title: listing.title,
             createdAt: listing.createdAt,
             updatedAt: listing.updatedAt,
             name: listing.title,
             imageUrl: imageUrls[0] ?? null,
+            sellerType: listing.sellerType ?? "INDIVIDUAL",
             category: { name: listing.category, slug: marketplaceCategorySlug(listing.category) },
           };
         });

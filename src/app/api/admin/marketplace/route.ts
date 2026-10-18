@@ -4,7 +4,7 @@ import { requireAdminApi } from "@/lib/admin-api";
 
 export async function POST(request: Request) {
   try {
-    const admin = await requireAdminApi();
+    const admin = await requireAdminApi(request);
     if (admin instanceof Response) {
       return admin;
     }

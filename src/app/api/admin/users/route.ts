@@ -3,8 +3,8 @@ import { prisma } from "@/lib/prisma";
 import { requireAdminApi } from "@/lib/admin-api";
 import { hashPassword, normalizeAdminEmail, validateNewPassword } from "@/lib/password";
 
-export async function GET() {
-  const auth = await requireAdminApi();
+export async function GET(req: Request) {
+  const auth = await requireAdminApi(req);
   if (auth instanceof Response) return auth;
 
   try {
@@ -19,7 +19,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  const auth = await requireAdminApi();
+  const auth = await requireAdminApi(req);
   if (auth instanceof Response) return auth;
 
   try {

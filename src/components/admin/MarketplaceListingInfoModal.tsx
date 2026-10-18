@@ -9,9 +9,9 @@ type MarketplaceListing = {
   price: number | string;
   condition: string;
   description: string;
-  sellerName: string;
-  sellerPhone: string;
-  location: string;
+  sellerName: string | null;
+  sellerPhone: string | null;
+  location: string | null;
   status: string;
   createdAt: Date;
   imageUrls: string[];

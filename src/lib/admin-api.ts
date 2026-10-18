@@ -2,6 +2,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { prisma } from "./prisma";
 import { COOKIE_NAME, verifyAdminToken } from "./auth";
+import { verifyCsrfRequest } from "./csrf";
 
 export async function getAdminFromCookie() {
   const jar = await cookies();
@@ -16,11 +17,19 @@ export async function getAdminFromCookie() {
   return user;
 }
 
-export async function requireAdminApi() {
+export async function requireAdminApi(request?: Request) {
   const user = await getAdminFromCookie();
   if (!user) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
+
+  const method = request?.method?.toUpperCase() ?? "GET";
+  if (request && method !== "GET" && method !== "HEAD" && method !== "OPTIONS") {
+    if (!(await verifyCsrfRequest(request))) {
+      return Response.json({ error: "Forbidden" }, { status: 403 });
+    }
+  }
+
   return user;
 }
 

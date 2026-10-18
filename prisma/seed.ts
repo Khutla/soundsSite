@@ -1,18 +1,15 @@
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import { ensureBootstrapAdmin } from "@/lib/admin-bootstrap";
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const hash = await bcrypt.hash("admin123", 10);
-  await prisma.adminUser.upsert({
-    where: { email: "admin@mkhsounds.co.za" },
-    update: { passwordHash: hash },
-    create: {
-      email: "admin@mkhsounds.co.za",
-      passwordHash: hash,
-    },
-  });
+  const bootstrapAdmin = await ensureBootstrapAdmin();
+  if (bootstrapAdmin) {
+    console.log(`Bootstrap admin configured: ${bootstrapAdmin.email}`);
+  } else {
+    console.log("No admin bootstrap credentials configured. Skipping admin seed.");
+  }
 
   const speakers = await prisma.category.upsert({
     where: { slug: "speakers-subwoofers" },
@@ -114,7 +111,7 @@ async function main() {
     });
   }
 
-  console.log("Seed complete. Admin: admin@mkhsounds.co.za / admin123");
+  console.log("Seed complete.");
 }
 
 main()

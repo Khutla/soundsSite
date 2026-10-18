@@ -20,7 +20,7 @@ export async function GET(_req: Request, ctx: Ctx) {
 }
 
 export async function PATCH(req: Request, ctx: Ctx) {
-  const auth = await requireAdminApi();
+  const auth = await requireAdminApi(req);
   if (auth instanceof Response) return auth;
 
   try {
@@ -72,8 +72,8 @@ export async function PATCH(req: Request, ctx: Ctx) {
   }
 }
 
-export async function DELETE(_req: Request, ctx: Ctx) {
-  const auth = await requireAdminApi();
+export async function DELETE(req: Request, ctx: Ctx) {
+  const auth = await requireAdminApi(req);
   if (auth instanceof Response) return auth;
 
   try {

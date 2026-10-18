@@ -48,7 +48,7 @@ export function serializeProduct(p: SearchableProduct): ProductJson {
 
     return {
       id: p.id,
-      slug: p.slug,
+      slug: p.slug ?? "",
       name: p.title,
       description: p.description,
       price: Number(p.price),
@@ -68,16 +68,16 @@ export function serializeProduct(p: SearchableProduct): ProductJson {
       featured: false,
       source: "marketplace",
       condition: p.condition,
-      sellerName: p.sellerName,
-      sellerPhone: (p as any).sellerPhone,
-      sellerType: (p as any).sellerType ?? null,
-      location: p.location,
+      sellerName: p.sellerName ?? undefined,
+      sellerPhone: p.sellerPhone ?? undefined,
+      sellerType: p.sellerType ?? "INDIVIDUAL",
+      location: p.location ?? undefined,
     };
   }
 
   return {
     id: p.id,
-    slug: p.slug,
+    slug: p.slug ?? "",
     name: p.name,
     description: p.description,
     imageUrl: p.imageUrl ?? null,

@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import type { CategoryJson } from "@/lib/serialize";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { ensureBrowserCsrfToken, withCsrfHeader } from "@/lib/csrf";
 
 type Mode = "create" | "edit";
 
@@ -45,19 +46,20 @@ export function CategoryForm({
       };
       if (slug.trim()) payload.slug = slug.trim();
 
+      const csrfToken = await ensureBrowserCsrfToken();
       let res: Response;
       if (mode === "create") {
         res = await fetch("/api/categories", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          headers: withCsrfHeader({ "Content-Type": "application/json" }, csrfToken ?? undefined),
+          body: JSON.stringify({ ...payload, csrfToken: csrfToken ?? undefined }),
         });
       } else {
         if (!initial) return;
         res = await fetch(`/api/categories/${encodeURIComponent(initial.id)}`, {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+          headers: withCsrfHeader({ "Content-Type": "application/json" }, csrfToken ?? undefined),
+          body: JSON.stringify({ ...payload, csrfToken: csrfToken ?? undefined }),
         });
       }
       const data = await res.json();

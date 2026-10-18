@@ -50,7 +50,7 @@ export default async function AdminProductsPage() {
                   <td className="px-4 py-3">
                     <div className="relative h-12 w-16 overflow-hidden rounded-md bg-zinc-900">
                       {p.imageUrl ? (
-                        <Image src={p.imageUrl} alt="" fill className="object-cover" sizes="64px" unoptimized />
+                        <Image src={p.imageUrl} alt={p.name} width={64} height={64} unoptimized />
                       ) : (
                         <div className="flex h-full items-center justify-center text-zinc-600">
                           ♪

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { MarketplaceListingInfoModal } from "@/components/admin/MarketplaceListingInfoModal";
+import { CsrfTokenField } from "@/components/admin/CsrfTokenField";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,7 @@ async function getListings(status: StatusFilter) {
       status: true,
       createdAt: true,
       imageUrls: true,
+      sellerType: true,
     },
   });
 
@@ -94,6 +96,7 @@ export default async function MarketplaceAdminPage({
 
   return (
     <div className="space-y-6">
+      <CsrfTokenField />
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <h1 className="text-2xl font-semibold text-white">Marketplace submissions</h1>
@@ -169,6 +172,7 @@ export default async function MarketplaceAdminPage({
                       <form action="/api/admin/marketplace" method="post">
                         <input type="hidden" name="id" value={listing.id} />
                         <input type="hidden" name="status" value="APPROVED" />
+                        <input type="hidden" name="csrfToken" value="" />
                         <button
                           type="submit"
                           className="rounded-full bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-500"
@@ -179,6 +183,7 @@ export default async function MarketplaceAdminPage({
                       <form action="/api/admin/marketplace" method="post">
                         <input type="hidden" name="id" value={listing.id} />
                         <input type="hidden" name="status" value="DECLINED" />
+                        <input type="hidden" name="csrfToken" value="" />
                         <button
                           type="submit"
                           className="rounded-full bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-rose-500"
