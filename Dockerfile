@@ -26,5 +26,6 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
+COPY --from=builder /app/entrypoint.sh ./entrypoint.sh
 
-CMD ["npm", "run", "start"]
+CMD ["/bin/sh", "./entrypoint.sh"]

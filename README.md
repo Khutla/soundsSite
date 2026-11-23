@@ -20,6 +20,17 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Deploying on Coolify
+
+Configure these environment variables in Coolify before deploying:
+
+- `DATABASE_URL`: the PostgreSQL connection URL for the Coolify database.
+- `ADMIN_EMAIL`: the admin account email.
+- `ADMIN_PASSWORD`: a new, unique admin password (at least 8 characters). Store it as a Coolify secret; do not commit it.
+- `JWT_SECRET`: a random secret of at least 32 characters.
+
+The container startup syncs the Prisma schema and runs the seed. When both admin variables are set, this creates or updates the configured admin account. The process is safe to repeat on restarts.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

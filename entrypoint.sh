@@ -1,9 +1,10 @@
 #!/bin/sh
+set -eu
+
 mkdir -p "${UPLOAD_DIR:-/app/public/uploads}"
 
-npx prisma@5.22.0 db push --accept-data-loss
+./node_modules/.bin/prisma db push
 
-# Run the seeding script to insert the admin user securely
-npx prisma@5.22.0 db seed
+npm run db:seed
 
-node server.js
+exec npm run start
