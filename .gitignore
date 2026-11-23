@@ -45,3 +45,6 @@ next-env.d.ts
 # local development database and uploads
 /prisma/dev.db
 /public/uploads/
+
+# Local admin notes may contain credentials.
+/Read me.docx
