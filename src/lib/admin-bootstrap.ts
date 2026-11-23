@@ -1,6 +1,6 @@
 import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
-import { hashPassword, normalizeAdminEmail } from "@/lib/password";
+import { prisma } from "./prisma";
+import { hashPassword, normalizeAdminEmail } from "./password";
 
 export function getBootstrapAdminConfig(): { email: string; password: string } | null {
   const email = normalizeAdminEmail(process.env.ADMIN_EMAIL ?? "");

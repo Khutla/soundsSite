@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { ensureBootstrapAdmin } from "@/lib/admin-bootstrap";
+import { ensureBootstrapAdmin } from "../src/lib/admin-bootstrap";
 
 const prisma = new PrismaClient();
 
