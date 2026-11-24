@@ -30,7 +30,10 @@ export async function POST(request: Request) {
       data: { status },
     });
 
-    return NextResponse.redirect(new URL("/admin/marketplace", request.url));
+    return new Response(null, {
+      status: 303,
+      headers: { Location: "/admin/marketplace" },
+    });
   } catch (error) {
     console.error("Marketplace admin update error", error);
     return NextResponse.json({ error: "Failed to update listing." }, { status: 500 });
