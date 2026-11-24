@@ -1,6 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ProductImageGallery } from "@/components/products/ProductImageGallery";
 import { findProductBySlug } from "@/lib/products/query";
 import { serializeProduct } from "@/lib/serialize";
 import { formatZar } from "@/lib/format";
@@ -25,6 +25,11 @@ export default async function ProductPage({ params }: Props) {
   if (!row) notFound();
 
   const product = serializeProduct(row);
+  const galleryImages = product.imageUrls?.length
+    ? product.imageUrls
+    : product.imageUrl
+      ? [product.imageUrl]
+      : [];
   const onSpecial = product.isSpecial && product.specialPrice != null;
   const displayPrice = onSpecial ? product.specialPrice! : product.price;
   const wasPrice = onSpecial ? product.price : null;
@@ -57,29 +62,15 @@ export default async function ProductPage({ params }: Props) {
       </nav>
 
       <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:gap-14">
-        <div className="relative aspect-square overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/60">
-          {product.imageUrl ? (
-            <Image
-              src={product.imageUrl}
-              alt={product.name}
-              fill
-              className="object-cover"
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              priority
-              unoptimized
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-zinc-800 to-black">
-              <span className="text-8xl text-zinc-700">♪</span>
-            </div>
-          )}
+        <div className="relative">
+          <ProductImageGallery images={galleryImages} alt={product.name} />
           {onSpecial && (
-            <span className="absolute left-4 top-4 rounded-full bg-amber-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-zinc-950">
+            <span className="absolute left-4 top-4 z-20 rounded-full bg-amber-500 px-3 py-1 text-xs font-bold uppercase tracking-wide text-zinc-950">
               On special
             </span>
           )}
           {isMarketplace && (
-            <span className="absolute left-4 top-4 rounded-full bg-sky-500/90 px-3 py-1 text-xs font-bold uppercase tracking-wide text-zinc-950">
+            <span className="absolute left-4 top-4 z-20 rounded-full bg-sky-500/90 px-3 py-1 text-xs font-bold uppercase tracking-wide text-zinc-950">
               Second-hand
             </span>
           )}
